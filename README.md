@@ -1,6 +1,44 @@
-# Debug Skills Collection v3
+# Debug Skills Collection
 
-A generic, agent-neutral multi-language debugging skill collection for Python, JVM (Java/Kotlin), Node.js, Go, and Native (C/C++/Rust).
+[中文文档](README.zh.md)
+
+A set of debugging skills that teach AI agents how to systematically diagnose and fix runtime bugs across five language families.
+
+## What This Does
+
+When you tell your AI agent "this produces wrong output" or "this crashes," the typical response is a lot of guessing. These skills give the agent a structured debugging workflow instead:
+
+1. **Auto-detect** the project's language, build tool, and entry point
+2. **Reproduce** the issue by running the smallest possible command
+3. **Trace** the execution path and collect runtime evidence (stack, locals, object state)
+4. **Identify** the first point where behavior diverges from expectation
+5. **Propose** the narrowest fix and validate it by re-running
+
+The agent does all of this without asking you a questionnaire upfront. It inspects the repo first, then asks at most 2 focused questions tied to evidence it has already observed.
+
+## Supported Languages
+
+| Skill | Languages | Typical Issues |
+|-------|-----------|---------------|
+| `python-debugger` | Python | Tracebacks, wrong output, object shape drift, async flow errors, import confusion |
+| `jvm-debugger` | Java, Kotlin | Exceptions, transaction boundary errors, deadlocks, heap pressure, Spring proxy confusion |
+| `node-debugger` | JavaScript (Node.js) | Promise chain errors, async ordering bugs, closure state leaks, event loop issues |
+| `go-debugger` | Go | Panic analysis, interface-nil traps, goroutine coordination, channel protocol errors |
+| `native-debugger` | C, C++, Rust | Segfaults, dangling pointers, memory corruption, lifetime errors, ownership violations |
+
+## How It Works
+
+Each skill is a `SKILL.md` file that defines a 10-step debugging workflow:
+
+```
+Identify symptom -> Reproduce -> Locate entrypoint -> Trace execution path ->
+Inspect contract -> Collect evidence -> Find first divergence ->
+State root cause -> Propose minimal fix -> Validate fix
+```
+
+Skills are **agent-neutral**: they work with any AI agent that can read markdown instructions (OpenCode, Claude Code, Cursor, etc.). No API keys, no plugins, no build step.
+
+Helper scripts in `python-helpers/` automate repetitive tasks (toolchain detection, entrypoint detection, reproduction capture, workspace snapshots). Skills invoke them automatically when available, and fall back to shell commands when not. Missing helpers never block the workflow.
 
 ## Install
 
@@ -9,60 +47,62 @@ A generic, agent-neutral multi-language debugging skill collection for Python, J
 cp -r *-debugger .opencode/skills/
 cp -r python-helpers .opencode/
 
-# Claude
+# Claude Code
 cp -r *-debugger ~/.claude/skills/
 cp -r python-helpers ~/.claude/
 
-# Any agent
-cp -r *-debugger .agents/skills/
-cp -r python-helpers .agents/
+# Any agent with a skills directory
+cp -r *-debugger <agent-skills-dir>/
+cp -r python-helpers <agent-root>/
 ```
 
-Or install just one language, e.g. `cp -r go-debugger .opencode/skills/`.
+Install just one language if you don't need all five:
 
-No config, no build step, no dependencies beyond Python 3.8+.
+```bash
+cp -r go-debugger .opencode/skills/
+cp -r python-helpers .opencode/
+```
+
+Requirements: Python 3.8+ (for helper scripts only; the skills themselves are pure markdown).
 
 ## Use
 
-Once installed, just describe the problem to your agent:
+Once installed, describe the problem to your agent in plain language:
 
 ```
 fix this
 debug this
 result is wrong
 this segfaults on startup
+the Python script gives wrong output
 ```
 
-The agent loads the matching debugger skill, detects toolchain and entrypoint, reproduces the issue, and proposes a fix. No need to mention skill names or provide logs upfront.
+The agent will:
+- Detect the language and toolchain from the repo
+- Run the smallest safe reproduction
+- Ask at most 2 narrow questions (tied to evidence already observed)
+- Propose a minimal fix and re-run to validate
 
-## Skills
-
-| Skill | Languages | Handles |
-|-------|-----------|---------|
-| `python-debugger` | Python | Runtime errors, tracebacks, shape drift, async bugs, import issues |
-| `jvm-debugger` | Java, Kotlin | Exceptions, transaction errors, deadlocks, heap pressure, Spring proxy issues |
-| `node-debugger` | JavaScript | Async flow, promise chains, closure state, event loop issues |
-| `go-debugger` | Go | Panics, interface-nil traps, goroutine issues, channel behavior |
-| `native-debugger` | C, C++, Rust | Crashes, segfaults, dangling pointers, memory errors, lifetime bugs |
+You don't need to mention skill names, paste logs, or specify which file is broken.
 
 ## Project Structure
 
 ```
 debug-skills/
-├── python-debugger/SKILL.md
-├── jvm-debugger/SKILL.md
-├── node-debugger/SKILL.md
-├── go-debugger/SKILL.md
-├── native-debugger/SKILL.md
-├── python-helpers/          # Auto-invoked by skills, not for human use
-│   ├── detect_toolchain.py
-│   ├── detect_entrypoint.py
-│   ├── detect_python_env.py
-│   ├── run_repro.py
-│   └── workspace_guard.py
-├── manifest.json
-├── VERSION
-└── LICENSE
+├── python-debugger/SKILL.md        # Python debugging skill
+├── jvm-debugger/SKILL.md           # Java / Kotlin debugging skill
+├── node-debugger/SKILL.md          # Node.js debugging skill
+├── go-debugger/SKILL.md            # Go debugging skill
+├── native-debugger/SKILL.md        # C / C++ / Rust debugging skill
+├── python-helpers/                 # Helper scripts (invoked by skills, not by humans)
+│   ├── detect_toolchain.py         #   Detect build tool from marker files
+│   ├── detect_entrypoint.py        #   Find likely entry points
+│   ├── detect_python_env.py        #   Detect Python virtual environment
+│   ├── run_repro.py                #   Run reproduction command with output capture
+│   └── workspace_guard.py          #   Snapshot and restore files for safe editing
+├── manifest.json                   # Machine-readable collection metadata
+├── VERSION                         # Current version
+└── LICENSE                         # MIT
 ```
 
 ## License
