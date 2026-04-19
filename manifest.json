@@ -1,0 +1,123 @@
+{
+  "name": "debug-skills-collection",
+  "version": "3.0.0",
+  "description": "A generic, agent-neutral debug skill bundle supporting Python, JVM, Node.js, Go, and Native debugging",
+  "type": "skill-collection",
+  "author": "Debug Skills Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/example/debug-skills"
+  },
+  "skills": [
+    {
+      "name": "python-debugger",
+      "description": "Debug Python runtime bugs using pdb or ipdb",
+      "path": "python-debugger",
+      "languages": ["python"],
+      "capabilities": [
+        "traceback-analysis",
+        "runtime-state-inspection",
+        "async-flow-debugging"
+      ]
+    },
+    {
+      "name": "jvm-debugger",
+      "description": "Debug Java and Kotlin JVM services",
+      "path": "jvm-debugger",
+      "languages": ["java", "kotlin"],
+      "capabilities": [
+        "exception-analysis",
+        "thread-dump-analysis",
+        "heap-inspection"
+      ]
+    },
+    {
+      "name": "node-debugger",
+      "description": "Debug Node.js runtime behavior",
+      "path": "node-debugger",
+      "languages": ["javascript"],
+      "capabilities": [
+        "async-flow-debugging",
+        "promise-chain-analysis",
+        "event-loop-inspection"
+      ]
+    },
+    {
+      "name": "go-debugger",
+      "description": "Debug Go services, workers, tests, and CLIs using Delve",
+      "path": "go-debugger",
+      "languages": ["go"],
+      "capabilities": [
+        "panic-analysis",
+        "goroutine-inspection",
+        "channel-analysis"
+      ]
+    },
+    {
+      "name": "native-debugger",
+      "description": "Debug C, C++, Rust, and other compiled runtime problems using gdb or lldb",
+      "path": "native-debugger",
+      "languages": ["c", "cpp", "rust"],
+      "capabilities": [
+        "crash-analysis",
+        "memory-debugging",
+        "stack-trace-analysis"
+      ]
+    }
+  ],
+  "helpers": {
+    "python": {
+      "path": "python-helpers",
+      "scripts": [
+        "detect_toolchain.py",
+        "detect_entrypoint.py", 
+        "detect_python_env.py",
+        "run_repro.py",
+        "workspace_guard.py"
+      ]
+    }
+  },
+  "examples": {
+    "path": "examples",
+    "languages": ["python", "go", "javascript", "java", "cpp"]
+  },
+  "metadata": {
+    "execution_mode": "default-execute",
+    "helper_mode": "optional-python-helpers",
+    "design_principles": [
+      "default-to-execution",
+      "evidence-driven",
+      "environment-aware", 
+      "minimal-scoped-edits",
+      "agent-neutral"
+    ],
+    "workflow": [
+      "identify-symptom",
+      "reproduce-issue",
+      "locate-entrypoint",
+      "build-execution-path",
+      "inspect-contract",
+      "collect-evidence",
+      "identify-divergence",
+      "state-root-cause",
+      "propose-fix",
+      "validate-fix"
+    ]
+  },
+  "installation": {
+    "opencode": {
+      "copy_skills": "Copy skill directories to .opencode/skills/",
+      "copy_helpers": "Copy python-helpers to .opencode/python-helpers/"
+    },
+    "claude": {
+      "copy_skills": "Copy skill directories to ~/.claude/skills/",
+      "copy_helpers": "Copy python-helpers to ~/.claude/python-helpers/"
+    }
+  },
+  "compatibility": {
+    "min_python_version": "3.8",
+    "supported_platforms": ["linux", "macos", "windows"],
+    "tested_agents": ["opencode", "claude"]
+  }
+}

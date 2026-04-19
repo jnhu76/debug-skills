@@ -1,0 +1,39 @@
+[java]
+[before reload] focus=Account{id=2, name=bob, balance=2000, vip=true}
+[before reload] store=Account{id=2, name=bob, balance=2000, vip=true}
+[after bonus] focus=Account{id=2, name=bob, balance=3000, vip=true}
+[after bonus] store=Account{id=2, name=bob_reloaded, balance=2000, vip=true}
+Expected: stored account balance should be 3000
+
+
+=====
+
+[go]
+[before reload] focus={ID:2 Name:bob Balance:2000 VIP:true}
+[before reload] store={ID:2 Name:bob Balance:2000 VIP:true}
+[after bonus] focus={ID:2 Name:bob Balance:3000 VIP:true}
+[after bonus] store={ID:2 Name:bob_reloaded Balance:2000 VIP:true}
+Expected: stored account balance should be 3000
+
+
+=====
+
+[python]
+alice: balance=500, bonus=0
+bob: balance=1200, bonus=0
+carol: balance=2500, bonus=600
+Expected: alice=0, bob=100, carol=400
+
+
+=====
+
+[node]
+[before]
+alice { monthlyTotal: 0, orderCount: 0 }
+bob { monthlyTotal: 0, orderCount: 0 }
+carol { monthlyTotal: 0, orderCount: 0 }
+[after recording bob order]
+alice { monthlyTotal: 250, orderCount: 1 }
+bob { monthlyTotal: 250, orderCount: 1 }
+carol { monthlyTotal: 250, orderCount: 1 }
+Expected: only bob should have monthlyTotal=250 and orderCount=1
