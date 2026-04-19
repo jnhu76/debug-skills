@@ -85,6 +85,33 @@ Agent 会：
 
 不需要提及技能名称、粘贴日志、或指定哪个文件出了问题。
 
+## 试试看
+
+仓库在 `examples/` 目录下提供了现成的练习项目。每个项目都能编译运行，但输出结果是**错的** -- 正好用来测试技能是否真的好用。
+
+```bash
+git clone <repo-url> && cd debug-skills
+```
+
+随便挑一个示例，cd 进去，然后让 agent 帮你调试：
+
+```bash
+cd examples/go-detached-pointer
+# 然后对 agent 说："stored balance 应该是 3000 但实际是 2000，帮我修一下"
+```
+
+### 可用示例
+
+| 示例 | 语言 | Bug 类型 | 症状 |
+|------|------|---------|------|
+| `python-late-bound-rules` | Python | 闭包延迟绑定 | bob 的 bonus 是 `0` 而不是 `100` |
+| `java-detached-account` | Java | 对象引用脱钩 | Store 余额停在 `2000` 而不是 `3000` |
+| `go-detached-pointer` | Go | 切片重新分配后指针失效 | Store 余额停在 `2000` 而不是 `3000` |
+| `node-shared-state` | Node.js | `Array.fill` 共享引用 | 所有客户显示相同的订单总额 |
+| `cpp-detached-account` | C++ | 容器 reload 后悬空指针 | 未定义行为（use-after-free） |
+
+每个示例都有 `README.md`，包含运行命令和期望 vs 实际输出的对比。
+
 ## 项目结构
 
 ```

@@ -85,6 +85,33 @@ The agent will:
 
 You don't need to mention skill names, paste logs, or specify which file is broken.
 
+## Try It Out
+
+The repo includes ready-made practice projects in `examples/`. Each one compiles and runs successfully but produces **wrong output** -- perfect for testing whether the skill actually works.
+
+```bash
+git clone <repo-url> && cd debug-skills
+```
+
+Pick any example, cd into it, and ask your agent to debug:
+
+```bash
+cd examples/go-detached-pointer
+# then tell your agent: "the stored balance should be 3000 but it's 2000, fix this"
+```
+
+### Available Examples
+
+| Example | Language | Bug | Symptom |
+|---------|----------|-----|---------|
+| `python-late-bound-rules` | Python | Late-bound closure capture | bob gets `0` bonus instead of `100` |
+| `java-detached-account` | Java | Detached object reference | Store balance stuck at `2000` instead of `3000` |
+| `go-detached-pointer` | Go | Stale slice pointer after reallocation | Store balance stuck at `2000` instead of `3000` |
+| `node-shared-state` | Node.js | Shared reference via `Array.fill` | All customers show the same order total |
+| `cpp-detached-account` | C++ | Dangling pointer after container reload | Undefined behavior (use-after-free) |
+
+Each example includes a `README.md` with the run command and expected vs actual output.
+
 ## Project Structure
 
 ```
